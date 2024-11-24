@@ -10,7 +10,7 @@ Color Green = {173, 204, 96, 255};
 Color DarkGreen = {43, 51, 24, 255};
 
 int cellSize = 25;
-int cellCount = 30;
+int cellCount = 20;
 
 double last_update_time = 0;
 bool IsUpdateRequired(double interval = 0.2){
@@ -34,6 +34,7 @@ class Snake{
 public:
     deque<Vector2> body = {Vector2{6, 9}, Vector2{5, 9}, Vector2{4, 9}};
     Vector2 direction = Vector2{1, 0};
+    bool IsGrow = false;
 
     void Draw(){
         for(unsigned int i = 0; i < body.size(); i++){
@@ -46,13 +47,18 @@ public:
         } 
     }
     void Update(){
+        if (IsGrow) {
+        body.push_back(Vector2Subtract(body[body.size() - 1],
+                      Vector2Subtract(body[body.size() - 1], body[body.size() - 2])));
+        IsGrow = false;
+        }
         body.pop_back();
         Vector2 next_position = Vector2Add(body[0], direction);
 
         if(next_position.x >= cellCount) next_position.x = 0;
         if(next_position.x < 0) next_position.x = cellCount - 1;
-        if(next_position.y >= cellCount) next_position.y = 0;
-        if(next_position.y < 0) next_position.y = cellCount - 1;
+        if(next_position.y >= cellCount) next_position.y = 1;
+        if(next_position.y < 1) next_position.y = cellCount - 1;
 
         body.push_front(next_position);
     }
@@ -105,7 +111,7 @@ public:
     void CheckCollisionWithFood(){
         if(Vector2Equals(snake.body[0], food.position)){
             food.position = food.GeneratePosition(snake.body);
-            snake.body.push_back(Vector2Subtract(snake.body[-1], Vector2Subtract(snake.body[-1], snake.body[-2])));
+            snake.IsGrow = true;
         }
     }
 };
@@ -115,7 +121,8 @@ int main ()
 	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
 
 	const int SCREEN_WIDTH = cellSize * cellCount;
-    const int SCREEN_HEIGHT = cellSize * cellCount;
+    const int TOPBAR_HEIGHT = 25;
+    const int SCREEN_HEIGHT = (cellSize * cellCount) + TOPBAR_HEIGHT;
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Snake");
     SetTargetFPS(60);
@@ -125,6 +132,10 @@ int main ()
     while (WindowShouldClose() == false){
         BeginDrawing();
             ClearBackground(Green);
+            DrawLine(0, TOPBAR_HEIGHT, SCREEN_WIDTH, TOPBAR_HEIGHT, GRAY);
+            DrawText(TextFormat("Score: %d", game.snake.body.size()), 10, 5, 18, DarkGreen);
+            DrawText("Game Area", SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2, 20, Green);
+
             if(IsUpdateRequired()) game.Update();
             game.CheckCollisionWithFood();
 
