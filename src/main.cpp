@@ -6,8 +6,8 @@
 
 using namespace std;
 
-Color Green = {173, 204, 96, 255};
-Color DarkGreen = {43, 51, 24, 255};
+Color Blue = {167, 216, 240, 255};
+Color DarkBlue = {0, 95, 115, 255};
 
 int cellSize = 25;
 int cellCount = 20;
@@ -43,7 +43,7 @@ public:
 
             Rectangle segment = Rectangle{x*cellSize, y*cellSize, (float)cellSize, (float)cellSize};
 
-            DrawRectangleRounded(segment, 0.5, 6, DarkGreen);
+            DrawRectangleRounded(segment, 0.8, 6, DarkBlue);
         } 
     }
     void Update(){
@@ -131,10 +131,10 @@ int main ()
 
     while (WindowShouldClose() == false){
         BeginDrawing();
-            ClearBackground(Green);
+            ClearBackground(Blue);
             DrawLine(0, TOPBAR_HEIGHT, SCREEN_WIDTH, TOPBAR_HEIGHT, GRAY);
-            DrawText(TextFormat("Score: %d", game.snake.body.size()), 10, 5, 18, DarkGreen);
-            DrawText("Game Area", SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2, 20, Green);
+            DrawText(TextFormat("Score: %d", game.snake.body.size()), 10, 5, 18, DarkBlue);
+            DrawText("Game Area", SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2, 20, Blue);
 
             if(IsUpdateRequired()) game.Update();
             game.CheckCollisionWithFood();
