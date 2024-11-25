@@ -89,7 +89,7 @@ public:
     }
     Vector2 GeneratePosition(deque<Vector2> snake_body){
         Vector2 new_position = GenerateRandomCell();
-        while(ElementInDeque(new_position, snake_body)){
+        while(ElementInDeque(new_position, snake_body) || new_position.y == 0){
             new_position = GenerateRandomCell();
         }
         return new_position;
